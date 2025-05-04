@@ -1,23 +1,29 @@
 import http from 'http';
+import fs from 'fs/promises'
+import url from 'url';
+import path from 'path'
+const __filename=url.fileURLToPath(import.meta.url);
+const __dirname=path.dirname(__filename);
+console.log(__filename,__dirname);
 const port=process.env.PORT;
 const server = http.createServer((req,res)=>{
     // res.setHeader("Content_Type","text/html");
     // res.statusCode('404');
     const url=req.url;
     const method=req.method;
+    let filePath;
     if(url==='/'){
-        res.writeHead(200,{"content-type":"text/html"})
-        res.end("<h1>Just the Get Request...</h1>")
+        filePath.join(__dirname,"public","index.html");
     }else if(url==='/about'){
-        res.writeHead(200,{"content-type":"text.html"});
-        res.end("<h1>At About Page...</h1>");
+        filePath.join(__dirname,"public","about.html");
     }else if(url==='/contact' && method==="POST"){
         res.end("<h1>You chooose the contact link and method is post</h1>")
     }else{
-        res.writeHead(404,{"Content-type":"text/html"});
-        res.end("<h1>Not Founded...</h1>")
+        throw new Error("Not found");
     }
-    console.log(url,method);
+    const data=fs.readFile(filePath);
+    res.writeHead(200,{"Content-type":"text/html"});
+    res.end(data);
     // res.writeHead(200,{"content-type":"text/html"})
     // res.end("<h1>Server is on and able to write...</h1>");
 });
