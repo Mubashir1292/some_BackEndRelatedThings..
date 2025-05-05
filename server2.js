@@ -16,6 +16,29 @@ const logger=(req,res,next)=>{
     
     next();
 }
+// ! Now I would replace the application/json type with the jsonMiddleware
+const jsonMiddleware=(req,res,next)=>{
+    res.setHeader("Content-Type","application/json");
+    next();
+}
+const getUsersHandler=(req,res)=>{
+    res.write(JSON.stringify(users));
+    res.end();
+}
+const getUserByIdHandler=(req,res)=>{
+    const id=req.url.split('/')[3];
+    const user= users.find(u=>u.id===parseInt(id));
+    if(user){
+        res.statusCode='200';
+        res.write(JSON.stringify(user));
+        res.end();
+    }else{
+        jsonMiddleware();
+        res.statusCode='404',
+        res.write(JSON.stringify({message:"Not found"}));
+        res.end();
+    }
+}
 
 const Server = createServer((req,res)=>{
     logger(req,res,()=>{
@@ -28,19 +51,18 @@ const Server = createServer((req,res)=>{
             const id=req.url.split('/')[3];
             const user = users.find((u)=>u.id===parseInt(id));
             if(user){
-                res.setHeader("Content-Type","application/json");
                 res.statusCode='200';
                 res.write(JSON.stringify(user));
                 res.end();
             }else{
-                res.setHeader("Content-Type","application/json");
+                jsonMiddleware();
                 res.statusCode='404',
                 res.write(JSON.stringify({message:"Not found"}));
                 res.end();
             }
         }
         else{
-            res.setHeader("Content-Type","application/json");
+            jsonMiddleware();
             res.statusCode='404';
             res.write(JSON.stringify({message:'Something went wrong'}));
             res.end();
