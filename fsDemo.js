@@ -20,4 +20,28 @@ const readfile=async()=>{
         console.log(error)
     }
 }
+
+//writing into the files....
+const writeIntoFile=async()=>{
+    try{
+        await fs.writeFile('./test.txt',"I am writing into this file....");
+        console.log("data written into this file....");
+    }catch(error){
+        console.log(error);
+    }
+}
+//apend into the file
+const appendIntoFile=async()=>{
+    try{
+        await fs.appendFile('./test.txt','I am appending this data onto the test file');
+        console.log("data append");
+    }catch(error){
+        console.log(error);
+    }
+}
+
+
+
+writeIntoFile();
+appendIntoFile();
 readfile();
